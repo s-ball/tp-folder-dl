@@ -1,0 +1,60 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tp-folder-dl"
+dynamic = ["version"]
+description = 'Automatic download of PO files from the TranslationProject'
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "s-ball", email = "s-ball@laposte.net" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = []
+
+[project.urls]
+Documentation = "https://github.com/s-ball/tp-folder-dl#readme"
+Issues = "https://github.com/s-ball/tp-folder-dl/issues"
+Source = "https://github.com/s-ball/tp-folder-dl"
+
+[tool.hatch.version]
+path = "src/tp_folder_dl/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:src/tp_folder_dl tests}"
+
+[tool.coverage.run]
+source_pkgs = ["tp_folder_dl", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/tp_folder_dl/__about__.py",
+]
+
+[tool.coverage.paths]
+tp_folder_dl = ["src/tp_folder_dl", "*/tp-folder-dl/src/tp_folder_dl"]
+tests = ["tests", "*/tp-folder-dl/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
