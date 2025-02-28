@@ -3,17 +3,15 @@
 #  SPDX-License-Identifier: MIT
 import filecmp
 import os
-import urllib.request
 from collections import namedtuple
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from time import mktime
-from unittest.mock import patch, DEFAULT
+from unittest.mock import patch
 
 import pytest
 
-import tp_folder_dl.tp_folder_dl
-from tp_folder_dl.tp_folder_dl import download_folder, MAIN_URL, handle_file, do_copy
+from tp_folder_dl.tp_folder_dl import MAIN_URL, do_copy, download_folder, handle_file
 
 
 @pytest.fixture
@@ -26,7 +24,7 @@ def test_load_dir(url):
     nb_de = 0
     for row in tab:
         assert row[0].endswith('.po')
-        if 'de.po' == row[0]:
+        if row[0] == 'de.po':
             nb_de += 1
     assert nb_de == 1
 
@@ -35,7 +33,6 @@ def test_handle_file_new(url):
     assert not os.path.exists('foo.po')
     with (patch('os.stat') as stat,
           patch('tp_folder_dl.tp_folder_dl.do_copy') as cp,
-          patch('os.utime') as utime,
           patch('os.path.exists') as exist,
           ):
         exist.return_value = False
@@ -48,13 +45,11 @@ def test_handle_file_same_dat(url):
     assert not os.path.exists('foo.po')
     with (patch('os.stat') as stat,
           patch('tp_folder_dl.tp_folder_dl.do_copy') as cp,
-          patch('os.utime') as utime,
           patch('os.path.exists') as exist,
           ):
         exist.return_value = True
         Stat = namedtuple('Stat', ['st_mtime'])
         str_dat = '2022-02-03 15:24'
-        from time import mktime
         from time import strptime
         stat.return_value = Stat(mktime(strptime(str_dat, '%Y-%m-%d %H:%M')))
         handle_file('foo.po', str_dat, url)
@@ -64,10 +59,8 @@ def test_handle_file_same_dat(url):
 
 def test_handle_file_wrong_dat(url):
     assert not os.path.exists('foo.po')
-    stat_orig = os.stat
     with (patch('os.stat') as stat,
           patch('tp_folder_dl.tp_folder_dl.do_copy') as cp,
-          patch('os.utime') as utime,
           patch('os.path.exists') as exist,
           ):
         exist.return_value = True
@@ -79,14 +72,15 @@ def test_handle_file_wrong_dat(url):
 
 @pytest.fixture
 def reception_dir():
-    with TemporaryDirectory() as dir:
+    with TemporaryDirectory() as folder:
         old = os.getcwd()
-        os.chdir(dir)
-        yield dir
+        os.chdir(folder)
+        yield folder
         os.chdir(old)
 
 
-def test_cp(reception_dir):
+@pytest.mark.usefixtures('reception_dir')
+def test_cp():
     data_path = Path(__file__).parent / 'data' / 'foo.po'
     assert data_path.exists()
     assert not os.path.exists('foo.po')

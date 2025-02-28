@@ -3,13 +3,14 @@
 #  SPDX-License-Identifier: MIT
 from unittest.mock import patch
 
-from tp_folder_dl.tp_folder_dl import do_work, MAIN_URL
+from tp_folder_dl.tp_folder_dl import MAIN_URL, do_work
 
 
 def test_main():
-    with patch('tp_folder_dl.tp_folder_dl.do_work') as do_work:
+    with patch('tp_folder_dl.tp_folder_dl.do_work') as dw:
+        # noinspection PyUnresolvedReferences
         import tp_folder_dl.__main__
-        do_work.assert_called_once()
+        dw.assert_called_once()
 
 
 def test_run():

@@ -20,7 +20,7 @@ _ = gettext.gettext
 def download_folder(url):
     print(f'Downloading everything from {url}')
     resp = urllib.request.urlopen(url)
-    soup = BeautifulSoup(resp)
+    soup = BeautifulSoup(resp, features='html.parser')
     tab = soup.table
     for row in tab.find_all('tr'):
         if '.po' in row.text:
