@@ -28,7 +28,7 @@ from the date on the TP site.
 ## Status
 
 Despite a high coverage rate (close to 100%), this is only a Beta quality work,
-because it lacks an acceptable documentation, and real world tests.
+because it lacks real world tests.
 
 ## Installation
 
